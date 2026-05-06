@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Speed Test</title>
+
+<style>
+body {
+    background: linear-gradient(135deg, #000, #002200);
+    color: #00ff88;
+    font-family: Arial;
+    text-align: center;
+}
+
+button, select {
+    background: black;
+    color: #00ff88;
+    border: 2px solid #00ff88;
+    padding: 10px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #00ff88;
+    color: black;
+}
+
+#gameArea {
+    width: 450px;
+    height: 450px;
+    border: 2px solid #00ff88;
+    margin: 20px auto;
+    box-shadow: 0 0 20px #00ff88;
+}
+
+#result {
+    font-size: 22px;
+    margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>⚡ Speed Test</h1>
+
+<select id="timeSelect">
+    <option value="10">10 sec</option>
+    <option value="20">20 sec</option>
+    <option value="40" selected>40 sec</option>
+    <option value="60">60 sec</option>
+</select>
+
+<br>
+
+<button onclick="startGame()">Start</button>
+<br>
+
+<a href="http://127.0.0.1:5500/accuracy%20test.html">
+    <button>Go to Accuracy Test</button>
+</a>
+
+<h2 id="timer">Time: 0</h2>
+<h2 id="score">Clicks: 0</h2>
+<h2 id="cps">CPS: 0</h2>
+
+<div id="gameArea"></div>
+
+<div id="result"></div>
+
+<script>
+let clicks = 0;
+let timeLeft = 0;
+let gameActive = false;
+let selectedTime = 40;
+
+function startGame() {
+    clicks = 0;
+    selectedTime = parseInt(document.getElementById("timeSelect").value);
+    timeLeft = selectedTime;
+    gameActive = true;
+
+    document.getElementById("result").innerText = "";
+
+    document.getElementById("gameArea").onclick = () => {
+        if (gameActive) {
+            clicks++;
+            updateStats();
+        }
+    };
+
+    let timer = setInterval(() => {
+        timeLeft--;
+        updateStats();
+
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            gameActive = false;
+
+            let cps = (clicks / selectedTime).toFixed(2);
+            document.getElementById("result").innerText =
+                "Final CPS: " + cps;
+        }
+    }, 1000);
+}
+
+function updateStats() {
+    document.getElementById("timer").innerText = "Time: " + timeLeft;
+    document.getElementById("score").innerText = "Clicks: " + clicks;
+
+    let cps = (clicks / (selectedTime - timeLeft || 1)).toFixed(2);
+    document.getElementById("cps").innerText = "CPS: " + cps;
+}
+</script>
+
+</body>
+</html>

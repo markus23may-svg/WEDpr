@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Accuracy Test</title>
+
+<style>
+body {
+    background: linear-gradient(135deg, #000, #002200);
+    color: #00ff88;
+    font-family: Arial;
+    text-align: center;
+}
+
+button, select {
+    background: black;
+    color: #00ff88;
+    border: 2px solid #00ff88;
+    padding: 10px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #00ff88;
+    color: black;
+}
+
+#gameArea {
+    width: 450px;
+    height: 450px;
+    border: 2px solid #00ff88;
+    margin: 20px auto;
+    position: relative;
+    box-shadow: 0 0 20px #00ff88;
+}
+
+.dot {
+    width: 30px;
+    height: 30px;
+    background: #00ff88;
+    border-radius: 50%;
+    position: absolute;
+    cursor: pointer;
+    box-shadow: 0 0 10px #00ff88;
+}
+
+#result {
+    font-size: 22px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎯 Accuracy Test</h1>
+
+<select id="timeSelect">
+    <option value="10">10 sec</option>
+    <option value="20">20 sec</option>
+    <option value="40" selected>40 sec</option>
+    <option value="60">60 sec</option>
+</select>
+
+<br>
+
+<button onclick="startGame()">Start</button>
+<br>
+
+<a href="http://127.0.0.1:5500/al%20home.html">
+    <button>Back to Speed Test</button>
+</a>
+
+<h2 id="timer">Time: 0</h2>
+<h2 id="score">Hits: 0</h2>
+
+<div id="gameArea"></div>
+
+<div id="result"></div>
+
+<script>
+let score = 0;
+let timeLeft = 0;
+let gameActive = false;
+let selectedTime = 40;
+
+function startGame() {
+    score = 0;
+    selectedTime = parseInt(document.getElementById("timeSelect").value);
+    timeLeft = selectedTime;
+    gameActive = true;
+
+    document.getElementById("result").innerText = "";
+    spawnDot();
+
+    let timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timer").innerText = "Time: " + timeLeft;
+
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            gameActive = false;
+            document.getElementById("gameArea").innerHTML = "";
+
+            document.getElementById("result").innerText =
+                "Final Hits: " + score;
+        }
+    }, 1000);
+}
+
+function spawnDot() {
+    if (!gameActive) return;
+
+    const area = document.getElementById("gameArea");
+    area.innerHTML = "";
+
+    const dot = document.createElement("div");
+    dot.classList.add("dot");
+
+    dot.style.top = Math.random() * 420 + "px";
+    dot.style.left = Math.random() * 420 + "px";
+
+    dot.onclick = (e) => {
+        e.stopPropagation();
+        score++;
+        document.getElementById("score").innerText = "Hits: " + score;
+        spawnDot();
+    };
+
+    area.appendChild(dot);
+}
+</script>
+
+</body>
+</html>
